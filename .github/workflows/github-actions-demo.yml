@@ -21,6 +21,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pytest  
+          pip install yaml
       - name: Test with pytest
         run: |
           pytest
