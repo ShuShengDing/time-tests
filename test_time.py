@@ -35,3 +35,10 @@ def test_same_end_start(): # two time ranges that end exactly at the same time w
     result = compute_overlap_time(range1, range2)
     
     assert result == [] 
+
+def test_start_end_afterwards():
+    start_time = "2010-01-12 12:00:00"
+    end_time = "2010-01-12 10:00:00"
+    
+    with pytest.raises(ValueError, match="Start time must be less than or equal to end time."):
+        time_range(start_time, end_time)
