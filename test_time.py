@@ -4,15 +4,13 @@ import datetime
 
 def test_given_input():
     large = time_range("2010-01-12 10:00:00", "2010-01-12 12:00:00")
-    print(large)
     short = time_range("2010-01-12 10:30:00", "2010-01-12 10:45:00", 2, 60)
-    print(short)
-    print(compute_overlap_time(large, short))
     result = compute_overlap_time(large, short)
     expected = [('2010-01-12 10:30:00', '2010-01-12 10:37:00'), ('2010-01-12 10:38:00', '2010-01-12 10:45:00')]
     assert result == expected
 
-def test_completely_separate():
+
+def test_completely_separate(): # two time ranges that do not overlap
     range1 = time_range("2010-01-12 10:00:00", "2010-01-12 11:00:00")
     range2 = time_range("2010-01-12 12:00:00", "2010-01-12 13:00:00")
     
@@ -20,16 +18,20 @@ def test_completely_separate():
     
     assert result == [] 
 
-
-
-
-def test_freedom():
-    range1 = time_range("2010-01-12 10:00:00", "2010-01-12 11:00:00",2, 60)
+def test_freedom(): # two time ranges that both contain several intervals each
+    range1 = time_range("2010-01-12 10:00:00", "2010-01-12 11:00:00",5, 60)
     print(range1)
     range2 = time_range("2010-01-12 10:30:00", "2010-01-12 13:00:00",10, 30)
     print(range2)
     result = compute_overlap_time(range1, range2)
+    print(result)
+
+    expected = ('2010-01-12 10:30:00', '2010-01-12 10:35:36')
+    assert result[0] == expected
+
+def test_completely_separate(): # two time ranges that end exactly at the same time when the other starts
+    range1 = time_range("2010-01-12 10:00:00", "2010-01-12 11:00:00")
+    range2 = time_range("2010-01-12 11:00:00", "2010-01-12 13:00:00")
+    result = compute_overlap_time(range1, range2)
     
-    expected = [None]
-    expected[0] = ('2010-01-12 10:30:30', '2010-01-12 10:44:33')
-    assert result[0] == expected[0]
+    assert result == [] 
