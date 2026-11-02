@@ -29,7 +29,7 @@ def test_freedom(): # two time ranges that both contain several intervals each
     expected = ('2010-01-12 10:30:00', '2010-01-12 10:35:36')
     assert result[0] == expected
 
-def test_completely_separate(): # two time ranges that end exactly at the same time when the other starts
+def test_same_end_start(): # two time ranges that end exactly at the same time when the other starts
     range1 = time_range("2010-01-12 10:00:00", "2010-01-12 11:00:00")
     range2 = time_range("2010-01-12 11:00:00", "2010-01-12 13:00:00")
     result = compute_overlap_time(range1, range2)
