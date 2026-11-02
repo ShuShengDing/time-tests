@@ -1,5 +1,5 @@
 import datetime
-
+import requests
 
 def time_range(start_time, end_time, number_of_intervals=1, gap_between_intervals_s=0):
     start_time_s = datetime.datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S")
@@ -24,9 +24,27 @@ def compute_overlap_time(range1, range2):
     return overlap_time
 
 
+
+
+
+def iss_passes(lat, lon, days=5, visibility_seconds=0, alt=0, apikey=None):
+    """
+    Returns a time_range-like output for intervals of time when the International Space Station
+    passes at a given location and for a number of days from today.
+    """
+    iss_request = requests.get(f"https://api.n2yo.com/rest/v1/satellite/visualpasses/25544/{lat}/{lon}/{alt}/{days}/{visibility_seconds}",
+                               params={
+                                   "apiKey": apikey,
+                               })
+
+    if iss_request.status_code != 200:
+        # if the request failed for some reason
+        return []
+    response = iss_request.json()
+    return [(datetime.datetime.fromtimestamp(x['startUTC']).strftime("%Y-%m-%d %H:%M:%S"),
+             (datetime.datetime.fromtimestamp(x['startUTC'] + x['duration'])).strftime("%Y-%m-%d %H:%M:%S"))
+            for x in response['passes']]
+
+
 if __name__ == "__main__":
-    large = time_range("2010-01-12 12:00:00", "2010-01-12 10:00:00")
-    print(large)
-    # short = time_range("2010-01-12 10:30:00", "2010-01-12 10:45:00", 2, 60)
-    # print(short)
-    # print(compute_overlap_time(large, short))
+    print(iss_passes(51.5074, -0.1278, apikey="8Z9NBU-ERH6Q8-SR3BDX-5VOK")) # ISS passes over London
